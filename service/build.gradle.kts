@@ -28,6 +28,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("com.h2database:h2")
 
+    // Reactive support (StreamingController에서 RandomAccessFile 처리 없이 webflux 사용 가능)
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+
+    // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
