@@ -1,5 +1,6 @@
 package com.example.vaultcast.controller
 
+import com.example.vaultcast.config.FileStorageProperties
 import com.example.vaultcast.model.VideoMetadata
 import com.example.vaultcast.service.VideoMetadataService
 import com.example.vaultcast.util.FileSizeValidator
@@ -21,11 +22,15 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
-class ChunkedUploadController(private val videoMetadataService: VideoMetadataService) {
+class ChunkedUploadController(
+        private val videoMetadataService: VideoMetadataService,
+        private val storageProps: FileStorageProperties
+) {
 
     // 임시 청크 파일 저장 디렉토리 및 최종 파일 저장 디렉토리
-    private val tempDir = "uploads/temp"
-    private val finalDir = "uploads"
+    private val finalDir = Paths.get(storageProps.uploadDir).toAbsolutePath().toString()
+    private val tempDir =
+            Paths.get(storageProps.uploadDir).resolve("temp").toAbsolutePath().toString()
 
     // 최대 파일 크기: 4GB
     private val maxFileSize: Long = 4L * 1024 * 1024 * 1024
@@ -45,7 +50,7 @@ class ChunkedUploadController(private val videoMetadataService: VideoMetadataSer
      * @param file: 전송된 파일 청크
      * @param title, description: 메타데이터 (간단한 위험 내용 검사 수행)
      */
-    @PostMapping("/upload/chunk")
+    @PostMapping("/v1/upload/chunk")
     fun uploadChunk(
             @RequestParam("fileId") fileId: String,
             @RequestParam("chunkIndex") chunkIndex: Int,

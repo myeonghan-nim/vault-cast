@@ -1,5 +1,6 @@
 package com.example.vaultcast.controller
 
+import com.example.vaultcast.config.FileStorageProperties
 import com.example.vaultcast.model.VideoMetadata
 import com.example.vaultcast.service.VideoMetadataService
 import com.example.vaultcast.util.FileSizeValidator
@@ -17,10 +18,13 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
-class UploadController(private val videoMetadataService: VideoMetadataService) {
+class UploadController(
+        private val videoMetadataService: VideoMetadataService,
+        private val storageProps: FileStorageProperties
+) {
 
     // 파일 저장 디렉토리 설정 (프로젝트 루트에 uploads 폴더 생성)
-    private val uploadDir = "uploads"
+    private val uploadDir = Paths.get(storageProps.uploadDir).toAbsolutePath().toString()
 
     init {
         // 업로드 디렉토리가 없으면 생성
@@ -36,7 +40,7 @@ class UploadController(private val videoMetadataService: VideoMetadataService) {
      * @param file: 전송된 파일
      * @param title, description: 메타데이터 (간단한 위험 내용 검사 수행)
      */
-    @PostMapping("/upload")
+    @PostMapping("/v1/upload")
     fun uploadVideo(
             @RequestParam("file") file: MultipartFile,
             @RequestParam("title", required = false) title: String?,
@@ -90,7 +94,13 @@ class UploadController(private val videoMetadataService: VideoMetadataService) {
             val savedMetadata = videoMetadataService.saveMetadata(metadata)
 
             ResponseEntity.status(HttpStatus.CREATED)
-                    .body(mapOf("message" to "File uploaded successfully", "fileName" to fileName, "metadataId" to savedMetadata.id.toString()))
+                    .body(
+                            mapOf(
+                                    "message" to "File uploaded successfully",
+                                    "fileName" to fileName,
+                                    "metadataId" to savedMetadata.id.toString()
+                            )
+                    )
         } catch (ex: IOException) {
             ex.printStackTrace()
             ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
