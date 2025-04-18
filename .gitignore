@@ -1,6 +1,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/gradle,kotlin,visualstudiocode,linux
 # Edit at https://www.toptal.com/developers/gitignore?templates=gradle,kotlin,visualstudiocode,linux
 
+### certs ###
+*.crt
+*.p12
+*.key
+
 ### Storage ###
 uploads/
 
