@@ -1,1 +1,2 @@
-rootProject.name = "vault-cast"
+rootProject.name = "vaultcast"
+include("service", "gateway")
