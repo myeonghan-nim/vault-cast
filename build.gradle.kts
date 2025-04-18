@@ -17,17 +17,19 @@ java {
 repositories {
     mavenCentral() // Maven Central Repository: 의존성을 다운로드할 저장소
     // 만약 다른 저장소를 사용하고 싶다면 다음과 같이 추가 가능
-    // maven { url "https://repo.spring.io/milestone" } // Spring Milestone Repository(예시)
+    // maven { url "https://repo.spring.io/milestone" } // Spring Milestone Repository (예시)
 }
 
 dependencies {
-    // 웹 관련 의존성(REST API 및 파일 업로드 지원)
+    // 웹 관련 의존성 (REST API 및 파일 업로드 지원)
     implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
+    // JPA / H2
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("com.h2database:h2")
+
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     // 테스트 관련 의존성
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -36,8 +38,8 @@ dependencies {
 // Kotlin 컴파일러 옵션 설정
 tasks.withType<KotlinCompile> {
     kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict") // JSR-305 annotataion을 엄격하게 처리
         jvmTarget = "21" // JVM 타겟 버전 설정
+        freeCompilerArgs = listOf("-Xjsr305=strict") // JSR-305 annotataion을 엄격하게 처리
     }
 }
 
