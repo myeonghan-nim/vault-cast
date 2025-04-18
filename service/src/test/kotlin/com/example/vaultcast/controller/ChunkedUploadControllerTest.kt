@@ -25,6 +25,7 @@ class ChunkedUploadControllerTest(
         @Autowired val metadataRepository: VideoMetadataRepository
 ) {
 
+    private val chunkUploadUrl = "/v1/upload/chunk"
     private val name = "file"
     private val totalChunks = 2
     private val chunkIndex = 0
@@ -58,7 +59,7 @@ class ChunkedUploadControllerTest(
         val multipartFile = MockMultipartFile(name, "chunk0", contentType, ByteArray(1))
 
         mockMvc.perform(
-                        multipart("/upload/chunk")
+                        multipart(chunkUploadUrl)
                                 .file(multipartFile)
                                 .param("fileId", fileId)
                                 .param("chunkIndex", chunkIndex.toString())
@@ -85,7 +86,7 @@ class ChunkedUploadControllerTest(
 
         // 청크 0 업로드
         mockMvc.perform(
-                        multipart("/upload/chunk")
+                        multipart(chunkUploadUrl)
                                 .file(chunk0)
                                 .param("fileId", fileId)
                                 .param("chunkIndex", "0")
@@ -98,7 +99,7 @@ class ChunkedUploadControllerTest(
 
         // 청크 1 업로드: 마지막 청크로 업로드가 완료되면 202 (Accepted) 상태 반환
         mockMvc.perform(
-                        multipart("/upload/chunk")
+                        multipart(chunkUploadUrl)
                                 .file(chunk1)
                                 .param("fileId", fileId)
                                 .param("chunkIndex", "1")
@@ -141,7 +142,7 @@ class ChunkedUploadControllerTest(
         val multipartFile = MockMultipartFile(name, "chunk0", contentType, ByteArray(0))
 
         mockMvc.perform(
-                        multipart("/upload/chunk")
+                        multipart(chunkUploadUrl)
                                 .file(multipartFile)
                                 .param("fileId", fileId)
                                 .param("chunkIndex", chunkIndex.toString())
@@ -168,7 +169,7 @@ class ChunkedUploadControllerTest(
                 )
 
         mockMvc.perform(
-                        multipart("/upload/chunk")
+                        multipart(chunkUploadUrl)
                                 .file(largeFile)
                                 .param("fileId", fileId)
                                 .param("chunkIndex", chunkIndex.toString())
@@ -188,7 +189,7 @@ class ChunkedUploadControllerTest(
         val invalidFile = MockMultipartFile(name, "chunk0", contentType, ByteArray(1))
 
         mockMvc.perform(
-                        multipart("/upload/chunk")
+                        multipart(chunkUploadUrl)
                                 .file(invalidFile)
                                 .param("fileId", fileId)
                                 .param("chunkIndex", chunkIndex.toString())
@@ -210,7 +211,7 @@ class ChunkedUploadControllerTest(
         val multipartFile = MockMultipartFile(name, "chunk0", contentType, ByteArray(1))
 
         mockMvc.perform(
-                        multipart("/upload/chunk")
+                        multipart(chunkUploadUrl)
                                 .file(multipartFile)
                                 .param("fileId", fileId)
                                 .param("chunkIndex", chunkIndex.toString())

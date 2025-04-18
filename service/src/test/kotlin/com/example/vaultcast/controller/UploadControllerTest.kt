@@ -24,6 +24,7 @@ class UploadControllerTest(
 ) {
 
     // 테스트에 필요한 변수들
+    private val uploadUrl = "/v1/upload"
     private val name = "file"
     private val originalFilename = "video.mp4"
     private val contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE
@@ -50,7 +51,7 @@ class UploadControllerTest(
     @Test
     fun `test file upload successful`() {
         mockMvc.perform(
-                        multipart("/upload")
+                        multipart(uploadUrl)
                                 .file(testFile)
                                 .param("title", title)
                                 .param("description", description)
@@ -76,7 +77,7 @@ class UploadControllerTest(
     fun `test file upload empty file`() {
         val emptyFile = MockMultipartFile(name, originalFilename, contentType, ByteArray(0))
 
-        mockMvc.perform(multipart("/upload").file(emptyFile)).andExpect(status().isBadRequest)
+        mockMvc.perform(multipart(uploadUrl).file(emptyFile)).andExpect(status().isBadRequest)
     }
 
     @Test
@@ -91,7 +92,7 @@ class UploadControllerTest(
                 )
 
         mockMvc.perform(
-                        multipart("/upload")
+                        multipart(uploadUrl)
                                 .file(largeFile)
                                 .param("title", title)
                                 .param("description", description)
@@ -103,7 +104,7 @@ class UploadControllerTest(
     fun `test file upload invalid file type`() {
         val invalidFile = MockMultipartFile(name, "video.exe", contentType, ByteArray(1))
 
-        mockMvc.perform(multipart("/upload").file(invalidFile))
+        mockMvc.perform(multipart(uploadUrl).file(invalidFile))
                 .andExpect(status().isUnsupportedMediaType)
     }
 
@@ -111,7 +112,7 @@ class UploadControllerTest(
     fun `test file upload dangerous content in metadata`() {
         // 여기서는 제목에 XSS 스크립트를 포함한 경우를 테스트
         mockMvc.perform(
-                        multipart("/upload")
+                        multipart(uploadUrl)
                                 .file(testFile)
                                 .param("title", "<script>alert('XSS')</script>")
                                 .param("description", description)
