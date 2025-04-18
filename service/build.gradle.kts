@@ -31,6 +31,11 @@ dependencies {
     // Reactive support (StreamingController에서 RandomAccessFile 처리 없이 webflux 사용 가능)
     implementation("org.springframework.boot:spring-boot-starter-webflux")
 
+    // JWT
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+
     // Kotlin
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
