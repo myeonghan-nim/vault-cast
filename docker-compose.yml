@@ -1,0 +1,74 @@
+version: "3.8"
+
+services:
+  service:
+    build:
+      context: .
+      dockerfile: service/Dockerfile
+    container_name: vaultcast-service
+    logging:
+      driver: "json-file"
+    expose:
+      - "8444"
+    networks:
+      outer:
+        aliases:
+          - service
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    container_name: vaultcast-gateway
+    logging:
+      driver: "json-file"
+    ports:
+      - "8443:8443"
+    depends_on:
+      - service
+    networks:
+      - outer
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.18.0
+    container_name: vaultcast-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    networks:
+      - outer
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.18.0
+    container_name: vaultcast-kibana
+    ports:
+      - "5601:5601"
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    networks:
+      - outer
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.18.0
+    container_name: vaultcast-filebeat
+    user: root
+    command: |
+      filebeat -e
+      -c /usr/share/filebeat/filebeat.yml
+      --strict.perms=false
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+    depends_on:
+      - service
+      - gateway
+      - elasticsearch
+    networks:
+      - outer
+
+networks:
+  outer:
+    driver: bridge

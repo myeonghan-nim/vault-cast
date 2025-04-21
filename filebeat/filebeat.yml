@@ -1,0 +1,23 @@
+filebeat.inputs:
+  - type: container
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    processors:
+      - add_docker_metadata: ~
+      - drop_event:
+          when:
+            not:
+              has_fields:
+                - docker.container.name
+
+output.elasticsearch:
+  hosts:
+    - "http://elasticsearch:9200"
+  # 기본 계정
+  username: "elastic"
+  password: "changeme"
+  # 인증서 검증 비활성화
+  ssl.verification_mode:
+    - none
+setup.kibana:
+  host: "kibana:5601"
