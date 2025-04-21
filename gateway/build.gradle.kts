@@ -25,12 +25,15 @@ dependencies {
     // Gateway & Reactive
     implementation("org.springframework.cloud:spring-cloud-starter-gateway")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     // JWT
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
     // Reactor Netty 기반 SSL/HTTPS
     implementation("io.projectreactor.netty:reactor-netty-http")
+
+    implementation("net.logstash.logback:logstash-logback-encoder:7.4")
 
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
