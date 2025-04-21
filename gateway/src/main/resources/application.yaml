@@ -3,9 +3,11 @@ server:
   ssl:
     enabled: true
     key-store: classpath:certs/gateway.p12
-    key-store-password: yourKeystorePassword
+    key-store-password: changeit
     key-store-type: PKCS12
     key-alias: gateway
+  http2:
+    enabled: true
 
 spring:
   cloud:
@@ -14,15 +16,15 @@ spring:
         - StripPrefix=1
       routes:
         - id: auth_route
-          uri: http://localhost:8081
+          uri: http://service:8444
           predicates:
             - Path=/api/v1/auth/**
         - id: upload_route
-          uri: http://localhost:8081
+          uri: http://service:8444
           predicates:
             - Path=/api/v1/upload/**
         - id: stream_route
-          uri: http://localhost:8081
+          uri: http://service:8444
           predicates:
             - Path=/api/v1/stream/**
   security:
@@ -38,6 +40,14 @@ logging:
     root: INFO
     com.example.vaultcast.gateway.LoggingFilter: DEBUG
     org.springframework.security.oauth2: DEBUG
+    reactor.netty.http.server.HttpServer: DEBUG
+    reactor.netty.tcp.TcpServer: DEBUG
 
 jwt:
   secret: ChangeThisVerySecretKey1234567890
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: auditEvents
